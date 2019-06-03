@@ -1,5 +1,7 @@
 package Controlador;
 
+import java.awt.Graphics;
+
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -92,7 +94,7 @@ public class Controller {
 				model = new Model();
 				view.getPanelTable().getTableModel().setNumRows(0);
 				view.getPanelTableReadyQueue().getTableModel().setNumRows(0);
-				view .getPanelTableLockQueue().getTableModel().setNumRows(0);
+				view.getPanelTableLockQueue().getTableModel().setNumRows(0);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

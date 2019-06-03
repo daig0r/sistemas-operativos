@@ -22,18 +22,11 @@ public class TablePanel extends JPanel {
 		table = new JTable();
 		JScrollPane scrollJTable = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-	
+
 		add(table.getTableHeader(), BorderLayout.PAGE_START);
 		add(scrollJTable, BorderLayout.CENTER);
-		
 
 		setVisible(true);
-	}
-
-	protected void initTableStatusPanel(JFrame window) {
-		setPreferredSize(new Dimension(window.getSize().width / 6, (int) (window.getSize().height * 0.42)));
-		String[] columnName = { "Proceso", "T. Llegada", "T. Rafaga" };
-		setTableModel(new DefaultTableModel(columnName, 0));
 	}
 
 	public JTable getTable() {

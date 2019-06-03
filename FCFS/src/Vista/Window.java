@@ -6,8 +6,11 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 public class Window extends JFrame {
+
+	private final String[] COLUMN_NAME = { "Proceso", "T. Llegada", "T. Rafaga" };
 
 	private GanttPanel panelGantt;
 	private TablePanel panelTableReadyQueue;
@@ -29,11 +32,11 @@ public class Window extends JFrame {
 		JPanel panelStatus = new JPanel();
 
 		panelTableReadyQueue = new TablePanel(this, "C. Listos");
-		panelTableReadyQueue.initTableStatusPanel(this);
+		initTableStatusPanel(panelTableReadyQueue, COLUMN_NAME);
 		panelStatus.add(panelTableReadyQueue);
 
 		panelTableLockQueue = new TablePanel(this, "C. Bloqueados");
-		panelTableLockQueue.initTableStatusPanel(this);
+		initTableStatusPanel(panelTableLockQueue, COLUMN_NAME);
 		panelStatus.add(panelTableLockQueue);
 
 		add(panelStatus, BorderLayout.WEST);
@@ -45,6 +48,11 @@ public class Window extends JFrame {
 		add(panelAction, BorderLayout.SOUTH);
 
 		setResizable(false);
+	}
+
+	private void initTableStatusPanel(TablePanel table, String[] columnName) {
+		table.setPreferredSize(new Dimension(getSize().width / 6, (int) (getSize().height * 0.42)));
+		table.setTableModel(new DefaultTableModel(columnName, 0));
 	}
 
 	public GanttPanel getPanelGantt() {
