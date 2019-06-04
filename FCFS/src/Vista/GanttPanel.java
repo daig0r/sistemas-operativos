@@ -26,6 +26,10 @@ public class GanttPanel extends TablePanel {
 		paintWaitTime(row, (int) process[1], (int) process[3]);
 		paintBurstTime(row, (int) process[3], (int) process[4]);
 	}
+	
+	private void graficarProceso() {
+		x = x + 1;
+	}
 
 	private void paintWaitTime(int row, int arrivalTime, int startTime){
 		for (int i = arrivalTime; i < startTime; i++) {
@@ -39,4 +43,6 @@ public class GanttPanel extends TablePanel {
 			getTableModel().setValueAt("**", row, i + 1);
 		}
 	}
+	
+	
 }
