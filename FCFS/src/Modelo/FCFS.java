@@ -4,9 +4,11 @@ public class FCFS {
 
 	private Queue<Process> queue;
 	private int currentFinalTime = 0;
+	private int serialId;
 
 	public FCFS() {
 		queue = new Queue<Process>();
+		serialId = 0;
 	}
 
 	private int randomBurst() {
@@ -27,13 +29,14 @@ public class FCFS {
 	}
 
 	public Object[] addProcess() {
-		Process process = new Process(queue.getSerialId() + 1, queue.getSerialId(), randomBurst());
+		Process process = new Process(serialId + 1, serialId, randomBurst());
 		queue.add(process);
+		serialId++;
 		return process.resume();
 	}
 
 	public Object[] appendProcess(Process process) {
-		queue.append(process);
+		queue.add(process);
 		return process.resume();
 	}
 
@@ -41,8 +44,12 @@ public class FCFS {
 		return queue.poll();
 	}
 
-	public int getQueueSerialId() {
-		return queue.getSerialId();
+	public int getSerialId() {
+		return serialId;
+	}
+
+	public int getCurrentFinalTime() {
+		return currentFinalTime;
 	}
 
 	public boolean isQueueEmpty() {

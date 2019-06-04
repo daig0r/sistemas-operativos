@@ -12,7 +12,7 @@ public class Window extends JFrame {
 
 	private final String[] COLUMN_NAME = { "Proceso", "T. Llegada", "T. Rafaga" };
 
-	private GanttPanel panelGantt;
+	private GanttPanel panelTableGantt;
 	private TablePanel panelTableReadyQueue;
 	private TablePanel panelTableLockQueue;
 	private TablePanel panelTable;
@@ -23,11 +23,11 @@ public class Window extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		setSize((int) (Toolkit.getDefaultToolkit().getScreenSize().width * 0.9),
-				(int) (Toolkit.getDefaultToolkit().getScreenSize().height * 0.95));
+				(int) (Toolkit.getDefaultToolkit().getScreenSize().height * 0.84));
 		setLocationRelativeTo(null);
 
-		panelGantt = new GanttPanel(this);
-		add(panelGantt, BorderLayout.NORTH);
+		panelTableGantt = new GanttPanel(this, "D. Gantt");
+		add(panelTableGantt, BorderLayout.NORTH);
 
 		JPanel panelStatus = new JPanel();
 
@@ -55,12 +55,12 @@ public class Window extends JFrame {
 		table.setTableModel(new DefaultTableModel(columnName, 0));
 	}
 
-	public GanttPanel getPanelGantt() {
-		return panelGantt;
+	public GanttPanel getPanelTableGantt() {
+		return panelTableGantt;
 	}
 
-	public void setPanelGantt(GanttPanel panelGantt) {
-		this.panelGantt = panelGantt;
+	public void setPanelTableGantt(GanttPanel panelTableGantt) {
+		this.panelTableGantt = panelTableGantt;
 	}
 
 	public TablePanel getPanelTableReadyQueue() {

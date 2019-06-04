@@ -3,11 +3,9 @@ package Modelo;
 public class Queue<T> {
 
 	private Node<T> head, tail;
-	private int serialId;
 
 	public Queue() {
 		head = tail = null;
-		serialId = 0;
 	}
 
 	public void add(T data) {
@@ -22,14 +20,8 @@ public class Queue<T> {
 			tail.setNext(node);
 
 		tail = node;
-		serialId++;
 	}
-
-	public void append(T data) {
-		add(data);
-		serialId--;
-	}
-
+	
 	public T poll() {
 
 		T data;
@@ -46,10 +38,6 @@ public class Queue<T> {
 		if (head == null)
 			return true;
 		return false;
-	}
-
-	public int getSerialId() {
-		return serialId;
 	}
 
 	@Override

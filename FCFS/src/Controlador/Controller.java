@@ -1,7 +1,5 @@
 package Controlador;
 
-import java.awt.Graphics;
-
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -36,7 +34,7 @@ public class Controller {
 	}
 
 	private void initAction() {
-		if (model.getQueueReady().getQueueSerialId() == 0) {
+		if (model.getQueueReady().getSerialId() == 0) {
 			for (int i = 1; i <= 5; i++)
 				view.getPanelTableReadyQueue().getTableModel().addRow(model.getQueueReady().addProcess());
 		} else {
@@ -48,8 +46,9 @@ public class Controller {
 	private void pollAction() {
 		if (!model.getQueueReady().isQueueEmpty()) {
 			view.getPanelTableReadyQueue().getTableModel().removeRow(0);
-			view.getPanelTable().getTableModel()
-					.addRow(model.getQueueReady().getDataProcess(model.getQueueReady().pollProcess()));
+			Object[] data = model.getQueueReady().getDataProcess(model.getQueueReady().pollProcess());
+			view.getPanelTable().getTableModel().addRow(data);
+			view.getPanelTableGantt().paintProcess(data);
 			System.out.println("Atendio");
 		} else {
 			JOptionPane.showMessageDialog(null, "¡No hay ningún procesos por atender!", "Atender",
@@ -95,6 +94,8 @@ public class Controller {
 				view.getPanelTable().getTableModel().setNumRows(0);
 				view.getPanelTableReadyQueue().getTableModel().setNumRows(0);
 				view.getPanelTableLockQueue().getTableModel().setNumRows(0);
+				view.getPanelTableGantt().getTableModel().setNumRows(0);
+				view.getPanelTableGantt().getTableModel().setColumnCount(1);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
