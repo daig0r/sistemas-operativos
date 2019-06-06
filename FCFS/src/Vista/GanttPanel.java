@@ -6,14 +6,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class GanttPanel extends TablePanel {
 
-	private TableCellRedendererColor cellRenderer;
-
 	public GanttPanel(JFrame window, String title) {
 		super(window, title);
 		getTable().setShowGrid(false);
 		getTable().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		setTableModel(new DefaultTableModel(new Object[]{"PID"}, 0));
-		cellRenderer = new TableCellRedendererColor();
+		TableCellRedendererColor cellRenderer = new TableCellRedendererColor();
 		getTable().setDefaultRenderer(Object.class , cellRenderer);
 	}
 
@@ -25,15 +23,14 @@ public class GanttPanel extends TablePanel {
 	}
 	
 	private void paintWaitTime(int row, int arrivalTime, int startTime) {
-		for (int i = arrivalTime; i < startTime; i++) {
-			getTableModel().setValueAt("--", row, i + 1);
-		}
+		for (int i = arrivalTime; i < startTime; i++)
+			getTableModel().setValueAt("-", row, i + 1);
 	}
 	
 	private void paintBurstTime(int row, int startTime, int finalTime){
 		for (int i = startTime; i < finalTime; i++) {
 			getTableModel().addColumn(String.valueOf(i));
-			getTableModel().setValueAt("**", row, i + 1);
+			getTableModel().setValueAt(".", row, i + 1);
 		}
 	}	
 }

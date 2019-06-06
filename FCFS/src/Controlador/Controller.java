@@ -35,7 +35,7 @@ public class Controller {
 
 	private void initAction() {
 		if (model.getQueueReady().getSerialId() == 0) {
-			for (int i = 1; i <= 5; i++)
+			for (int i = 1; i <= 10; i++)
 				view.getPanelTableReadyQueue().getTableModel().addRow(model.getQueueReady().addProcess());
 		} else {
 			JOptionPane.showMessageDialog(null, "¡No se puede inciar más de una vez!", "Iniciar",

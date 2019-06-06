@@ -25,6 +25,7 @@ public class TablePanel extends JPanel {
 		add(table.getTableHeader(), BorderLayout.PAGE_START);
 		add(scrollJTable, BorderLayout.CENTER);
 
+		table.setEnabled(false);
 		setVisible(true);
 	}
 
