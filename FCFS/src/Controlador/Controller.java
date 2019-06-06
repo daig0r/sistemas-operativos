@@ -49,7 +49,6 @@ public class Controller {
 			Object[] data = model.getQueueReady().getDataProcess(model.getQueueReady().pollProcess());
 			view.getPanelTable().getTableModel().addRow(data);
 			view.getPanelTableGantt().paintProcess(data);
-			System.out.println("Atendio");
 		} else {
 			JOptionPane.showMessageDialog(null, "¡No hay ningún procesos por atender!", "Atender",
 					JOptionPane.WARNING_MESSAGE);
@@ -58,7 +57,6 @@ public class Controller {
 
 	private void addAction() {
 		view.getPanelTableReadyQueue().getTableModel().addRow(model.getQueueReady().addProcess());
-		System.out.println("Añadio");
 	}
 
 	private void lockAction() {
@@ -66,7 +64,6 @@ public class Controller {
 			view.getPanelTableReadyQueue().getTableModel().removeRow(0);
 			view.getPanelTableLockQueue().getTableModel()
 					.addRow(model.getQueueLock().appendProcess((model.getQueueReady().pollProcess())));
-			System.out.println("Bloqueo");
 		} else {
 			JOptionPane.showMessageDialog(null, "¡No hay ningún procesos para bloquear!", "Bloquear",
 					JOptionPane.WARNING_MESSAGE);
