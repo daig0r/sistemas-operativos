@@ -20,8 +20,8 @@ public class GanttPanel extends TablePanel {
 	public void paintProcess(Object[] process) {
 		int row = getTableModel().getRowCount();
 		getTableModel().addRow(new Object[]{process[0]});
-		paintBurstTime(row, (int) process[3], (int) process[4]);
-		paintWaitTime(row, (int) process[1], (int) process[3]);
+		paintBurstTime(row, (int) process[4], (int) process[5]);
+		paintWaitTime(row, (int) process[2], (int) process[4]);
 	}
 	
 	private void paintWaitTime(int row, int arrivalTime, int startTime) {
