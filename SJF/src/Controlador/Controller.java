@@ -41,14 +41,14 @@ public class Controller {
 			JOptionPane.showMessageDialog(null, "¡No se puede inciar más de una vez!", "Iniciar",
 					JOptionPane.WARNING_MESSAGE);
 		}
-		sortByPriority(1);
+//		sortByPriority(1);
 	}
 
 	private void pollAction() {
-		//sortByPriority(1);
+		// sortByPriority(1);
 		if (!model.getQueueReady().isQueueEmpty()) {
-			view.getPanelTableReadyQueue().getTableModel().removeRow(0);
 			Object[] data = model.getQueueReady().getDataProcess(model.getQueueReady().pollProcess());
+//			view.getPanelTableReadyQueue().getTableModel().removeRow(row);
 			view.getPanelTable().getTableModel().addRow(data);
 			view.getPanelTableGantt().paintProcess(data);
 		} else {
@@ -59,7 +59,7 @@ public class Controller {
 
 	private void addAction() {
 		view.getPanelTableReadyQueue().getTableModel().addRow(model.getQueueReady().addProcess());
-		//sortByPriority(1);
+		// sortByPriority(1);
 	}
 
 	private void lockAction() {
@@ -113,36 +113,40 @@ public class Controller {
 				e.printStackTrace();
 			}
 	}
-	
+
 	private void sortByPriority(int priorityColumn) {
-		int Vi , Vj, aux;
+		int Vi, Vj, aux;
 		int lastRow = view.getPanelTableReadyQueue().getTableModel().getRowCount();
 		for (int i = 0; i < lastRow - 1; i++) {
-			
-			for (int j=i+1; j< lastRow; j++){
-				System.out.println(i+":"+j);
-				
-				Vi = (int)view.getPanelTableReadyQueue().getTableModel().getValueAt(i,priorityColumn);
-				Vj = (int)view.getPanelTableReadyQueue().getTableModel().getValueAt(j,priorityColumn);
-				System.out.print("Proceso :"+view.getPanelTableReadyQueue().getTableModel().getValueAt(i, 0)+ " Con prioridad :" +Vi+ " && ");
-		    	System.out.println("Proceso :"+view.getPanelTableReadyQueue().getTableModel().getValueAt(j, 0)+ " Con prioridad :"+Vj);
-			    if(Vi<Vj)
-			    {
-			    	System.out.println("La fila de: "+view.getPanelTableReadyQueue().getTableModel().getValueAt(i, 0));
-			    	System.out.println("Sera cambiada por La fila de: "+view.getPanelTableReadyQueue().getTableModel().getValueAt(j, 0));
 
-			    	view.getPanelTableReadyQueue().getTableModel().moveRow(i, i, j);
+			for (int j = i + 1; j < lastRow; j++) {
+				System.out.println(i + ":" + j);
 
-			    }if (Vi == Vj) {
-			    	
-			    	int ti = (int)view.getPanelTableReadyQueue().getTableModel().getValueAt(i,2);
-			    	int tj= (int)view.getPanelTableReadyQueue().getTableModel().getValueAt(j,2);
-			    	if(ti>tj) {
-			    		System.out.println("Tienen igual prioridad .. Cambia por orden de llegada");
-			    		view.getPanelTableReadyQueue().getTableModel().moveRow(i, i, j);
-			    	}
-			    }
-			  }
+				Vi = (int) view.getPanelTableReadyQueue().getTableModel().getValueAt(i, priorityColumn);
+				Vj = (int) view.getPanelTableReadyQueue().getTableModel().getValueAt(j, priorityColumn);
+				System.out.print("Proceso :" + view.getPanelTableReadyQueue().getTableModel().getValueAt(i, 0)
+						+ " Con prioridad :" + Vi + " && ");
+				System.out.println("Proceso :" + view.getPanelTableReadyQueue().getTableModel().getValueAt(j, 0)
+						+ " Con prioridad :" + Vj);
+				if (Vi < Vj) {
+					System.out
+							.println("La fila de: " + view.getPanelTableReadyQueue().getTableModel().getValueAt(i, 0));
+					System.out.println("Sera cambiada por La fila de: "
+							+ view.getPanelTableReadyQueue().getTableModel().getValueAt(j, 0));
+
+					view.getPanelTableReadyQueue().getTableModel().moveRow(i, i, j);
+
+				}
+				if (Vi == Vj) {
+
+					int ti = (int) view.getPanelTableReadyQueue().getTableModel().getValueAt(i, 2);
+					int tj = (int) view.getPanelTableReadyQueue().getTableModel().getValueAt(j, 2);
+					if (ti > tj) {
+						System.out.println("Tienen igual prioridad .. Cambia por orden de llegada");
+						view.getPanelTableReadyQueue().getTableModel().moveRow(i, i, j);
+					}
+				}
+			}
 		}
 	}
 }

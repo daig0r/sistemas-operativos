@@ -41,7 +41,19 @@ public class SJF {
 	}
 
 	public Process pollProcess() {
-		return queue.poll();
+		Process data = null;
+		for (int i = 1; i <= 4; i++) {
+			for (int j = 1; j <= queue.getSize(); j++) {
+				data = queue.getData(j);
+				if (data.getPriority() == i) {
+					if (data.getArrivalTime() <= currentFinalTime) {
+						queue.remove(j);
+						return data;
+					}
+				}
+			}
+		}
+		return data;
 	}
 
 	public int getSerialId() {

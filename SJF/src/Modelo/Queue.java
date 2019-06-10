@@ -20,16 +20,6 @@ public class Queue<T> {
 		tail = node;
 		size++;
 	}
-
-	public T poll() {
-		T data;
-		Node<T> aux = head;
-		head = aux.getNext();
-		data = aux.getData();
-		aux = null;
-		size--;
-		return data;
-	}
 	
 	public boolean remove(int pos) {
 		if (size >= pos) {
