@@ -31,13 +31,11 @@ public class Queue<T> {
 		return data;
 	}
 	
-	public T remove(int pos) {
+	public boolean remove(int pos) {
 		if (size >= pos) {
-			T data;
 			Node<T> aux = head;			
 			if (pos == 1) {
 				head = aux.getNext();
-				data = aux.getData();
 				aux = null;
 			} else {
 				for (int i = 1; i < pos - 1; i++) {
@@ -45,13 +43,12 @@ public class Queue<T> {
 				}
 				Node<T> temp = aux.getNext();
 				aux.setNext(temp.getNext());
-				data = temp.getData();
 				temp = null;
 			}
 			size--;
-			return data;
+			return true;
 		}
-		return null;
+		return false;
 	}
 
 	public T getData(int pos) {
@@ -61,9 +58,6 @@ public class Queue<T> {
 			aux = aux.getNext();
 			p++;
 		}
-		if (aux != null)
-			return aux.getData();
-
 		return aux.getData();
 	}
 
