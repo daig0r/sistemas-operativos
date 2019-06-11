@@ -3,11 +3,12 @@ package Modelo;
 public class SJF {
 
 	private Queue<Process> queue;
-	private int currentFinalTime = 0;
+	private int currentFinalTime;
 	private int serialId;
 
 	public SJF() {
 		queue = new Queue<Process>();
+		currentFinalTime = 0;
 		serialId = 0;
 	}
 
@@ -41,6 +42,10 @@ public class SJF {
 	}
 
 	public Process pollProcess() {
+		return queue.poll();
+	}
+
+	public Process pollProcessByPriority() {
 		Process data = null;
 		for (int i = 1; i <= 4; i++) {
 			for (int j = 1; j <= queue.getSize(); j++) {

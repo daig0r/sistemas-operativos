@@ -15,7 +15,7 @@ public class TablePanel extends JPanel {
 
 	private JTable table;
 	private DefaultTableModel tableModel;
- 
+
 	public TablePanel(JFrame window, String title) {
 		setBorder(BorderFactory.createTitledBorder(title));
 		setLayout(new BorderLayout());
@@ -50,5 +50,13 @@ public class TablePanel extends JPanel {
 	public void setTableModel(DefaultTableModel tableModel) {
 		this.tableModel = tableModel;
 		table.setModel(tableModel);
+	}
+
+	public void removeRow(int columnIndex, String value) {
+		for (int row = 0; row < table.getRowCount(); row++) {
+			if (table.getValueAt(row, columnIndex).equals(value)) {
+				tableModel.removeRow(row);
+			}
+		}
 	}
 }

@@ -10,7 +10,7 @@ public class Controller {
 
 	private Model model;
 	private Window view;
-
+	
 	public Controller(Model model, Window view) {
 		this.model = model;
 		this.view = view;
@@ -45,8 +45,8 @@ public class Controller {
 
 	private void pollAction() {
 		if (!model.getQueueReady().isQueueEmpty()) {
-			Object[] data = model.getQueueReady().getDataProcess(model.getQueueReady().pollProcess());
-//			view.getPanelTableReadyQueue().getTableModel().removeRow(row); // TODO: Eliminar fila de la cola de listos
+			Object[] data = model.getQueueReady().getDataProcess(model.getQueueReady().pollProcessByPriority());
+			view.getPanelTableReadyQueue().removeRow(0, String.valueOf(data[0]));
 			view.getPanelTable().getTableModel().addRow(data);
 			view.getPanelTableGantt().paintProcess(data);
 		} else {
@@ -61,9 +61,9 @@ public class Controller {
 
 	private void lockAction() {
 		if (!model.getQueueReady().isQueueEmpty()) {
-			view.getPanelTableReadyQueue().getTableModel().removeRow(0);
-			view.getPanelTableLockQueue().getTableModel()
-					.addRow(model.getQueueLock().appendProcess((model.getQueueReady().pollProcess())));
+			Object[] data = model.getQueueLock().appendProcess((model.getQueueReady().pollProcessByPriority()));
+			view.getPanelTableReadyQueue().removeRow(0, String.valueOf(data[0]));
+			view.getPanelTableLockQueue().getTableModel().addRow(data);
 		} else {
 			JOptionPane.showMessageDialog(null, "¡No hay ningún procesos para bloquear!", "Bloquear",
 					JOptionPane.WARNING_MESSAGE);
