@@ -12,10 +12,14 @@ public class Controller {
 	private Model model;
 	private Window view;
 	private Thread criticalSection;
+	private int remainingTime;
+	private boolean isAvalible;
 
 	public Controller(Model model, Window view) {
 		this.model = model;
 		this.view = view;
+		this.remainingTime = 0;
+		this.isAvalible = true;
 	}
 
 	public void initController(String[] columnName) {
@@ -51,7 +55,16 @@ public class Controller {
 	private void pollAction() {
 		if (!model.getQueueReady().isQueueEmpty()) {
 			Process process = model.getQueueReady().pollProcess();
-			paintProcess(process);
+			if (remainingTime > process.getBurstTime()) {
+				isAvalible = false;
+				criticalSection.interrupt();
+			}
+			while (true) {
+				if (isAvalible) {
+					paintProcess(process);
+					break;
+				}
+			}
 			view.getPanelTableReadyQueue().getTableModel().removeRow(0);
 
 		} else {
@@ -116,12 +129,14 @@ public class Controller {
 			}
 	}
 
-	private synchronized void paintProcess(Process process) {
+	private void paintProcess(Process process) {
+		model.getQueueReady().calcuteTime(process);
 		DefaultTableModel tableModelGantt = view.getPanelTableGantt().getTableModel();
 		int row = getProcessRow(process.getId());
 		criticalSection = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				view.getPanelAction().getBtnPoll().setEnabled(false);
 				for (int i = process.getArrivalTime(); i < process.getStartTime(); i++) {
 					tableModelGantt.setValueAt("  ", row, i + 1);
 					try {
@@ -129,10 +144,11 @@ public class Controller {
 					} catch (InterruptedException e) {
 					}
 				}
+				view.getPanelAction().getBtnPoll().setEnabled(true);
 				view.getPanelAction().getBtnLock().setEnabled(true);
 				for (int i = process.getStartTime(); i < process.getFinalTime(); i++) {
 					process.setBurstTimeExecuted(process.getBurstTimeExecuted() + 1);
-//					tableModelGantt.addColumn(i);
+					remainingTime = process.getBurstTime() - process.getBurstTimeExecuted();
 					tableModelGantt.setValueAt(" ", row, i + 1);
 					try {
 						Thread.sleep(500);
@@ -148,12 +164,16 @@ public class Controller {
 								view.getPanelTableLockQueue().getTableModel().addRow(aux.resume());
 								view.getPanelTable().getTableModel().addRow(process.resume());
 							}
+							isAvalible = true;
+							remainingTime = 0;
 						} catch (CloneNotSupportedException e1) {
 							System.err.println("Error al clonar - " + e1);
 						}
 						Thread.currentThread().stop();
 					}
 				}
+				isAvalible = true;
+				remainingTime = 0;
 				model.getQueueReady().recalcuteTime(process);
 				view.getPanelAction().getBtnLock().setEnabled(false);
 				view.getPanelTable().getTableModel().addRow(process.resume());

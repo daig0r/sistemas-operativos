@@ -19,7 +19,7 @@ public class SRTF {
 		return (int) (Math.random() * max + min);
 	}
 
-	private void calcuteTime(Process process) {
+	public void calcuteTime(Process process) {
 		process.setStartTime(currentFinalTime);
 		process.setFinalTime(process.getBurstTime() + process.getStartTime());
 		process.setReturnTime(process.getFinalTime() - process.getArrivalTimeHead());
@@ -31,7 +31,6 @@ public class SRTF {
 	public void recalcuteTime(Process process) {
 		retoreFromMemento(savedStates.getData(savedStates.getSize() - 1));
 		calcuteTime(process);
-
 	}
 
 	public Process addProcess() {
@@ -46,9 +45,7 @@ public class SRTF {
 	}
 
 	public Process pollProcess() {
-		Process process = queue.poll();
-		calcuteTime(process);
-		return process;
+		return queue.poll();
 	}
 
 	public void createBlockProcess(Process process) {
@@ -57,11 +54,11 @@ public class SRTF {
 		process.setArrivalTime(currentFinalTime);
 	}
 
-	private synchronized Memento saveToMemento() {
+	private Memento saveToMemento() {
 		return new Memento(currentFinalTime);
 	}
 
-	private synchronized void retoreFromMemento(Memento memento) {
+	private void retoreFromMemento(Memento memento) {
 		currentFinalTime = memento.getSavedState();
 	}
 
