@@ -10,7 +10,7 @@ public class Controller {
 
 	private Model model;
 	private Window view;
-	
+
 	public Controller(Model model, Window view) {
 		this.model = model;
 		this.view = view;
@@ -29,8 +29,9 @@ public class Controller {
 	}
 
 	private void setTableColumName(String[] columnName) {
-		if (this.view.getPanelTable().getTableModel() == null)
-			this.view.getPanelTable().setTableModel(new DefaultTableModel(columnName, 0));
+		if (view.getPanelTable().getTableModel() == null)
+			view.getPanelTable().setTableModel(new DefaultTableModel(columnName, 0));
+			view.getPanelTableGantt().setTableModel(new DefaultTableModel(new Object[] { "PID" }, 0));
 	}
 
 	private void initAction() {
@@ -44,15 +45,22 @@ public class Controller {
 	}
 
 	private void pollAction() {
-		if (!model.getQueueReady().isQueueEmpty()) {
-			Object[] data = model.getQueueReady().getDataProcess(model.getQueueReady().pollProcessByPriority());
-			view.getPanelTableReadyQueue().removeRow(0, String.valueOf(data[0]));
-			view.getPanelTable().getTableModel().addRow(data);
-			view.getPanelTableGantt().paintProcess(data);
-		} else {
-			JOptionPane.showMessageDialog(null, "¡No hay ningún procesos por atender!", "Atender",
-					JOptionPane.WARNING_MESSAGE);
+		try {
+			if (!model.getQueueReady().isQueueEmpty()) {
+				Object[] data = model.getQueueReady().getDataProcess(model.getQueueReady().pollProcessByPriority());
+				view.getPanelTableReadyQueue().removeRow(0, String.valueOf(data[0]));
+				view.getPanelTable().getTableModel().addRow(data);
+				view.getPanelTableGantt().paintProcess(data);
+
+			} else {
+				JOptionPane.showMessageDialog(null, "¡No hay ningún procesos por atender!", "Atender",
+						JOptionPane.WARNING_MESSAGE);
+			}
+
+		} catch (Exception e) {
+			System.out.println("algo");
 		}
+
 	}
 
 	private void addAction() {

@@ -7,32 +7,48 @@ import javax.swing.table.DefaultTableModel;
 
 public class GanttPanel extends TablePanel {
 
+	TableCellRedendererColor cellRenderer;
+//	private DefaultTableModel tableModel;
+
 	public GanttPanel(JFrame window, String title) {
 		super(window, title);
 		getTable().setShowGrid(false);
 		getTable().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		setTableModel(new DefaultTableModel(new Object[]{"PID"}, 0));
-		TableCellRedendererColor cellRenderer = new TableCellRedendererColor();
+		setTableModel(new DefaultTableModel(new Object[] { "PID" }, 0));
+		cellRenderer = new TableCellRedendererColor();
 		cellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		getTable().setDefaultRenderer(Object.class , cellRenderer);
+		getTable().setDefaultRenderer(Object.class, cellRenderer);
+		System.out.println("nuevo");
 	}
 
-	public void paintProcess(Object[] process) {
+	public void paintProcess(Object[] process) throws Exception {
 		int row = getTableModel().getRowCount();
-		getTableModel().addRow(new Object[]{process[0]});
-		paintBurstTime(row, (int) process[4], (int) process[5]);
-		paintWaitTime(row, (int) process[2], (int) process[4]);
-	}
-	
-	private void paintWaitTime(int row, int arrivalTime, int startTime) {
-		for (int i = arrivalTime; i < startTime; i++)
-			getTableModel().setValueAt("  ", row, i + 1);
-	}
-	
-	private void paintBurstTime(int row, int startTime, int finalTime){
-		for (int i = startTime; i < finalTime; i++) {
+		getTableModel().addRow(new Object[] { process[0] });
+		for (int i = (int) process[4]; i < (int) process[5]; i++) {
 			getTableModel().addColumn(String.valueOf(i));
-			getTableModel().setValueAt(" ", row, i + 1);
 		}
-	}	
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for (int i = (int) process[2]; i < (int) process[4]; i++) {
+					getTableModel().setValueAt("  ", row, i + 1);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				for (int i = (int) process[4]; i < (int) process[5]; i++) {
+					getTableModel().setValueAt(" ", row, i + 1);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		thread.start();
+	}
 }

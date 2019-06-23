@@ -30,7 +30,7 @@ public class SJF {
 	}
 
 	public Object[] addProcess() {
-		Process process = new Process(serialId + 1, serialId, random(1, 10), random(1, 4));
+		Process process = new Process(serialId + 1, serialId, random(1, 7), random(1, 4));
 		queue.add(process);
 		serialId++;
 		return process.resume();

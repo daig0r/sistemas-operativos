@@ -52,11 +52,14 @@ public class TablePanel extends JPanel {
 		table.setModel(tableModel);
 	}
 
-	public void removeRow(int columnIndex, String value) {
-		for (int row = 0; row < table.getRowCount(); row++) {
+	public int removeRow(int columnIndex, String value) {
+		int row = 0;
+		for (; row < table.getRowCount(); row++) {
 			if (table.getValueAt(row, columnIndex).equals(value)) {
 				tableModel.removeRow(row);
+				break;
 			}
 		}
+		return row;
 	}
 }
