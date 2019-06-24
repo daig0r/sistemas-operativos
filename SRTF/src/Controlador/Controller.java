@@ -55,9 +55,16 @@ public class Controller {
 	private void pollAction() {
 		if (!model.getQueueReady().isQueueEmpty()) {
 			Process process = model.getQueueReady().pollProcess();
+			view.getPanelTableReadyQueue().getTableModel().removeRow(0);
 			if (remainingTime > process.getBurstTime()) {
 				isAvalible = false;
 				criticalSection.interrupt();
+			} else {
+				if (remainingTime > 0) {
+					model.getQueueLock().appendProcess(process);
+					view.getPanelTableLockQueue().getTableModel().addRow(process.resume());
+					return;
+				}
 			}
 			while (true) {
 				if (isAvalible) {
@@ -65,7 +72,6 @@ public class Controller {
 					break;
 				}
 			}
-			view.getPanelTableReadyQueue().getTableModel().removeRow(0);
 
 		} else {
 			JOptionPane.showMessageDialog(null, "¡No hay ningún procesos por atender!", "Atender",
