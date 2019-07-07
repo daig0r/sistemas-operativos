@@ -34,7 +34,7 @@ public class SRTF {
 	}
 
 	public Process addProcess() {
-		Process process = new Process(serialId + 1, serialId, random(1, 10));
+		Process process = new Process(serialId + 1, serialId, random(1, 12));
 		queue.add(process);
 		serialId++;
 		return process;
