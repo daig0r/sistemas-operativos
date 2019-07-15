@@ -4,6 +4,7 @@ public class SJF extends Scheduler {
 
 	public SJF(String name, Scheduler nexScheduler, Model model) {
 		super(name, nexScheduler, model);
+		time = 9000;
 	}
 
 	@Override

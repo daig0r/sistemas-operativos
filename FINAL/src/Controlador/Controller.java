@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 import Modelo.Model;
 import Modelo.Process;
+import Modelo.RR;
 import Modelo.Scheduler;
 import Vista.Window;
 
@@ -42,6 +43,7 @@ public class Controller {
 
 	private void initAction() {
 		if (model.getSerialId() == 0) {
+			view.getPanelTableRRQueue().getTableModel().addRow(model.getQueueReadyRR().createProcess().resume());
 			for (int i = 1; i <= 5; i++) {
 				int random = model.random(1, 3);
 				if (random == 1) {
@@ -64,29 +66,24 @@ public class Controller {
 	private void pollAction() {
 		if (isAvalible) {
 			isAvalible = false;
-			Scheduler scheduler;
 			Process process;
 			if (!model.getQueueReadyRR().isQueueEmpty()) {
-				scheduler = model.getQueueReadyRR();
-				process = scheduler.pollProcess();
+				process = model.getQueueReadyRR().pollByQuantum();
 				view.getPanelTableRRQueue().getTableModel().removeRow(0);
 			} else if (!model.getQueueReadyFCFS().isQueueEmpty()) {
-				scheduler = model.getQueueReadyFCFS();
-				process = scheduler.pollProcess();
+				process = model.getQueueReadyFCFS().pollProcess();
 				view.getPanelTableFCFSQueue().getTableModel().removeRow(0);
 			} else if (!model.getQueueReadySJF().isQueueEmpty()) {
-				scheduler = model.getQueueReadySJF();
-				process = scheduler.pollProcess();
-				view.getPanelTablePriorityQueue().getTableModel().removeRow(0);
+				process = model.getQueueReadySJF().pollProcessByPriority();
+				view.getPanelTablePriorityQueue().getTableModel()
+						.removeRow(view.getPanelTablePriorityQueue().searchRow(0, process.getId()));
 			} else {
+				isAvalible = true;
 				JOptionPane.showMessageDialog(null, "¡No hay ningún procesos por atender!", "Atender",
 						JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-
-			if (scheduler != null) {
-				paintProcess(process, scheduler);
-			}
+			paintProcess(process, process.getScheduler());
 		}
 	}
 
@@ -170,45 +167,56 @@ public class Controller {
 		criticalSection = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				view.getPanelAction().getBtnPoll().setEnabled(false);
-				for (int i = process.getArrivalTime(); i < process.getStartTime(); i++) {
-					tableModelGantt.setValueAt("  ", row, i + 1);
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-					}
-				}
-				view.getPanelAction().getBtnPoll().setEnabled(true);
-				view.getPanelAction().getBtnLock().setEnabled(true);
-				for (int i = process.getStartTime(); i < process.getFinalTime(); i++) {
-					process.setBurstTimeExecuted(process.getBurstTimeExecuted() + 1);
-					tableModelGantt.setValueAt(" ", row, i + 1);
-					tableModelGantt.fireTableDataChanged();
-					try {
-						Thread.sleep(400);
-					} catch (InterruptedException e) {
-						view.getPanelAction().getBtnLock().setEnabled(false);
+				try {
+					view.getPanelAction().getBtnPoll().setEnabled(false);
+					for (int i = process.getArrivalTime(); i < process.getStartTime(); i++) {
+						tableModelGantt.setValueAt("  ", row, i + 1);
 						try {
-							Process aux = (Process) process.clone();
-							process.setBurstTime(process.getBurstTimeExecuted());
-							if (process.getBurstTime() > 0) {
-								scheduler.recalcuteTime(process);
-								model.createBlockProcess(aux);
-								view.getPanelTableLockQueue().getTableModel().addRow(aux.resume());
-								view.getPanelTable().getTableModel().addRow(process.resume());
-							}
-							isAvalible = true;
-						} catch (CloneNotSupportedException e1) {
-							System.err.println("Error al clonar - " + e1);
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
 						}
-						Thread.currentThread().stop();
 					}
+					view.getPanelAction().getBtnLock().setEnabled(true);
+					for (int i = process.getStartTime(); i < process.getFinalTime(); i++) {
+						process.setBurstTimeExecuted(process.getBurstTimeExecuted() + 1);
+						tableModelGantt.setValueAt(" ", row, i + 1);
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							view.getPanelAction().getBtnLock().setEnabled(false);
+							try {
+								Process aux = (Process) process.clone();
+								int valid = process.getBurstTime() - process.getBurstTimeExecuted();
+								if (valid > 0) {
+									process.setBurstTime(process.getBurstTimeExecuted());
+									scheduler.recalcuteTime(process);
+									if (scheduler.getName().equals("RR")) {
+										((RR) scheduler).updateChildProcess(aux);
+										model.getQueueLock().addProcess(((RR) scheduler).child);
+										view.getPanelTableLockQueue().getTableModel()
+												.addRow(((RR) scheduler).child.resume());
+									} else {
+										model.createBlockProcess(aux);
+										view.getPanelTableLockQueue().getTableModel().addRow(aux.resume());
+									}
+								}
+							} catch (CloneNotSupportedException e1) {
+								System.err.println("Error al clonar - " + e1);
+							}
+							Thread.currentThread().stop();
+						}
+					}
+					scheduler.recalcuteTime(process);
+					if (scheduler.getName().equals("RR")) {
+						((RR) scheduler).addChildProcess();
+					}
+				} finally {
+					isAvalible = true;
+					view.getPanelAction().getBtnPoll().setEnabled(true);
+					view.getPanelAction().getBtnLock().setEnabled(false);
+					view.getPanelTable().getTableModel().addRow(process.resume());
 				}
-				isAvalible = true;
-				scheduler.recalcuteTime(process);
-				view.getPanelAction().getBtnLock().setEnabled(false);
-				view.getPanelTable().getTableModel().addRow(process.resume());
-			}			
+			}
 		});
 		criticalSection.start();
 	}

@@ -34,10 +34,11 @@ public class Process implements Cloneable {
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(7000 + scheduler.queue.getSize() * 1500);
-					scheduler.moveProcess();
+					Thread.sleep(scheduler.time + scheduler.queue.getSize() * 1500);
 				} catch (InterruptedException e) {
 					Thread.currentThread().stop();
+				} finally {
+					scheduler.moveProcess();
 				}
 			}
 		});
@@ -97,7 +98,11 @@ public class Process implements Cloneable {
 	}
 
 	public void setWaitTime(int waitTime) {
-		this.waitTime = waitTime;
+		if (waitTime < 0) {
+			this.waitTime = 0;
+		} else {
+			this.waitTime = waitTime;
+		}
 	}
 
 	public int getArrivalTimeHead() {

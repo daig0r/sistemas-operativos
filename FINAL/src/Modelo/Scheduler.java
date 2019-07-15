@@ -9,6 +9,7 @@ public abstract class Scheduler {
 	protected Queue<Process> queue;
 	protected Scheduler nextScheduler;
 	protected DefaultTableModel tableModel;
+	protected int time;
 
 	public Scheduler(String name, Scheduler nexScheduler, Model model) {
 		this.name = name;
@@ -32,7 +33,7 @@ public abstract class Scheduler {
 	}
 
 	public Process createProcess() {
-		Process process = new Process(model.getSerialId() + 1, model.getSerialId(), model.random(1, 12), this);
+		Process process = new Process(model.getSerialId() + 1, model.getSerialId(), model.random(1, 10), this);
 		addProcess(process);
 		model.increaseSerialId();
 		return process;
@@ -52,18 +53,13 @@ public abstract class Scheduler {
 		if (nextScheduler != null) {
 			if (!isQueueEmpty()) {
 				Process process = pollProcess();
+				process.setScheduler(nextScheduler);
+				nextScheduler.addProcess(process);
 				if (nextScheduler.nextScheduler != null) {
-					process.setScheduler(nextScheduler);
 					process.aging();			
 				}
-				nextScheduler.addProcess(process);
 				tableModel.removeRow(0);
 				nextScheduler.tableModel.addRow(process.resume());
-			}
-		} else {
-			if (!isQueueEmpty()) {
-//				pollProcess();
-//				tableModel.removeRow(0);
 			}
 		}
 	}
