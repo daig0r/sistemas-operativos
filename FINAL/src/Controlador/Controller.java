@@ -66,6 +66,7 @@ public class Controller {
 	private void pollAction() {
 		if (isAvalible) {
 			isAvalible = false;
+			view.getPanelTableGantt().updateTitleColor(isAvalible);
 			Process process;
 			if (!model.getQueueReadyRR().isQueueEmpty()) {
 				process = model.getQueueReadyRR().pollByQuantum();
@@ -79,6 +80,7 @@ public class Controller {
 						.removeRow(view.getPanelTablePriorityQueue().searchRow(0, process.getId()));
 			} else {
 				isAvalible = true;
+				view.getPanelTableGantt().updateTitleColor(isAvalible);
 				JOptionPane.showMessageDialog(null, "¡No hay ningún procesos por atender!", "Atender",
 						JOptionPane.WARNING_MESSAGE);
 				return;
@@ -212,6 +214,7 @@ public class Controller {
 					}
 				} finally {
 					isAvalible = true;
+					view.getPanelTableGantt().updateTitleColor(isAvalible);
 					view.getPanelAction().getBtnPoll().setEnabled(true);
 					view.getPanelAction().getBtnLock().setEnabled(false);
 					view.getPanelTable().getTableModel().addRow(process.resume());
